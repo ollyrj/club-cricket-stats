@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8" />
+<title>ClubStats — Beautiful cricket dashboards for your club</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Turn your Play Cricket stats into a beautiful, shareable dashboard. Setup in 48 hours. £199 first year, £99/year after." />
+<style>
+  :root {
+    --navy:#0B4169;
+    --navy-d:#072c47;
+    --navy-l:#1a5a8a;
+    --cream:#f7f3e8;
+    --gold:#d4a017;
+    --gold-l:#F2C94C;
+    --green:#1e8a57;
+    --ink:#0e1d2c;
+    --muted:#5a6776;
+    --line:#dfe6ee;
+    --bg:#fafbfc;
+    --card:#ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.55;
+    -webkit-font-smoothing: antialiased; font-size: 16px;
+  }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--navy); text-decoration: none; }
+
+  nav.top {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+  }
+  nav.top .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  nav.top .logo { font-weight: 900; font-size: 20px; color: var(--navy); letter-spacing: -0.3px; }
+  nav.top .logo .acc { color: var(--gold); }
+  nav.top ul { list-style: none; display: flex; gap: 24px; align-items: center; }
+  nav.top ul a { color: var(--muted); font-weight: 500; font-size: 14px; }
+  nav.top ul a:hover { color: var(--navy); }
+  nav.top .cta {
+    background: var(--navy); color: white !important;
+    padding: 9px 18px; border-radius: 999px; font-weight: 700; font-size: 14px;
+    transition: all 0.15s;
+  }
+  nav.top .cta:hover { background: var(--navy-d); }
+
+  .hero {
+    background:
+      radial-gradient(800px 400px at 90% -10%, rgba(212,160,23,0.18), transparent 70%),
+      radial-gradient(900px 500px at -10% 110%, rgba(11,65,105,0.10), transparent 70%),
+      linear-gradient(180deg, #ffffff 0%, var(--cream) 100%);
+    padding: 90px 0 70px;
+    position: relative; overflow: hidden;
+    border-bottom: 4px solid var(--gold);
+  }
+  .hero .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 60px; align-items: center; }
+  .hero h1 {
+    font-size: 54px; line-height: 1.05; letter-spacing: -1.5px; font-weight: 900;
+    color: var(--navy);
+  }
+  .hero h1 .h-acc { color: var(--gold); }
+  .hero .lede {
+    font-size: 19px; color: var(--muted); margin: 22px 0 28px; max-width: 540px;
+  }
+  .hero .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 14px 26px; border-radius: 999px;
+    font-weight: 700; font-size: 15px; transition: all 0.15s;
+    cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--navy); color: white !important; }
+  .btn-primary:hover { background: var(--navy-d); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(11,65,105,0.25); }
+  .btn-secondary {
+    background: white; color: var(--navy) !important;
+    border: 2px solid var(--navy);
+  }
+  .btn-secondary:hover { background: var(--navy); color: white !important; }
+  .hero .trust { margin-top: 28px; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .hero .trust .tick { color: var(--green); font-weight: 700; }
+
+  .preview-wrap {
+    position: relative;
+    border-radius: 12px;
+    box-shadow: 0 30px 60px -20px rgba(11,65,105,0.35), 0 18px 36px -12px rgba(11,65,105,0.15);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: white;
+    transform: perspective(1200px) rotateY(-3deg) rotateX(1deg);
+    transition: transform 0.3s;
+  }
+  .preview-wrap:hover { transform: perspective(1200px) rotateY(0deg) rotateX(0deg) scale(1.01); }
+  .preview-bar {
+    background: #f0f1f4; padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .preview-bar .dots { display: flex; gap: 6px; }
+  .preview-bar .dots span { width: 11px; height: 11px; border-radius: 50%; background: #cdd2db; }
+  .preview-bar .url {
+    flex: 1; background: white; border-radius: 6px;
+    padding: 5px 12px; font-size: 11.5px; color: var(--muted); border: 1px solid #e3e6ed;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .mini-dash {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-d) 100%);
+    color: white; padding: 18px 22px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .mini-dash .title-row { display: flex; justify-content: space-between; align-items: center; }
+  .mini-dash h3 { font-size: 19px; font-weight: 800; }
+  .mini-dash .pill {
+    font-size: 10px; background: rgba(255,255,255,0.15); padding: 3px 9px;
+    border-radius: 999px; opacity: 0.9;
+  }
+  .mini-dash .tabs { display: flex; gap: 4px; margin-top: 14px; }
+  .mini-dash .tab {
+    background: rgba(255,255,255,0.08); padding: 7px 16px;
+    border-radius: 6px 6px 0 0; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;
+    text-transform: uppercase; color: rgba(255,255,255,0.7);
+  }
+  .mini-dash .tab.active { background: white; color: var(--navy); transform: translateY(1px); }
+  .mini-kpis {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    padding: 16px 20px; background: white;
+  }
+  .mini-kpi {
+    border-left: 3px solid var(--navy);
+    padding: 8px 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+  }
+  .mini-kpi.gold { border-left-color: var(--gold); }
+  .mini-kpi .l { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 700; }
+  .mini-kpi .v { font-size: 19px; font-weight: 800; color: var(--navy); }
+  .mini-kpi .n { font-size: 10px; color: var(--ink); font-weight: 600; }
+  .mini-table { padding: 0 20px 20px; }
+  .mini-table table { width: 100%; font-size: 11.5px; border-collapse: collapse; }
+  .mini-table th { text-align: left; padding: 6px; background: #f8fafc; color: var(--muted); text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px; }
+  .mini-table th:not(:nth-child(2)), .mini-table td:not(:nth-child(2)) { text-align: right; }
+  .mini-table td { padding: 6px; border-bottom: 1px solid var(--line); }
+  .mini-table tr.gold td:first-child { background: linear-gradient(135deg, #ffd700, #ffea80); font-weight: 800; }
+  .mini-table td.pl { font-weight: 600; }
+  .mini-table td.r { font-weight: 700; color: var(--navy); }
+
+  section { padding: 80px 0; }
+  section.alt { background: white; }
+  .section-h { text-align: center; margin-bottom: 50px; }
+  .section-h .eyebrow {
+    color: var(--gold); font-weight: 800; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;
+  }
+  .section-h h2 {
+    font-size: 38px; line-height: 1.15; letter-spacing: -0.8px; color: var(--navy);
+    font-weight: 900; max-width: 760px; margin: 0 auto;
+  }
+  .section-h h2 .h-acc { color: var(--gold); }
+  .section-h p { color: var(--muted); font-size: 17px; max-width: 620px; margin: 14px auto 0; }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .compare .card {
+    padding: 30px; border-radius: 14px; background: white;
+    border: 1px solid var(--line);
+  }
+  .compare .card.bad { border-top: 4px solid #cc6666; }
+  .compare .card.good { border-top: 4px solid var(--green); background: linear-gradient(180deg, #f3fbf7 0%, white 60%); }
+  .compare .card h3 { margin-bottom: 14px; font-size: 18px; color: var(--ink); }
+  .compare .card ul { list-style: none; }
+  .compare .card li { padding: 7px 0; font-size: 15px; color: var(--muted); position: relative; padding-left: 28px; }
+  .compare .card li::before {
+    content: ''; position: absolute; left: 0; top: 11px;
+    width: 18px; height: 18px; border-radius: 50%;
+  }
+  .compare .card.bad li::before { background: #fbe0e0; }
+  .compare .card.bad li::after { content: '×'; position: absolute; left: 4px; top: 7px; color: #cc6666; font-weight: 900; font-size: 15px; line-height: 1; }
+  .compare .card.good li::before { background: #d2f0e0; }
+  .compare .card.good li::after { content: '✓'; position: absolute; left: 4px; top: 8px; color: var(--green); font-weight: 900; font-size: 13px; line-height: 1; }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .feature {
+    padding: 30px; background: white; border-radius: 14px;
+    border: 1px solid var(--line);
+    transition: all 0.2s;
+  }
+  .feature:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(11,65,105,0.10); }
+  .feature .icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-l));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 18px;
+  }
+  .feature.navy .icon { background: linear-gradient(135deg, var(--navy), var(--navy-l)); color: white; }
+  .feature.green .icon { background: linear-gradient(135deg, var(--green), #34a374); color: white; }
+  .feature h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .feature p { color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+
+  .how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .how-step {
+    background: white; padding: 24px; border-radius: 12px;
+    border: 1px solid var(--line); position: relative;
+  }
+  .how-step .num {
+    background: var(--gold); color: var(--navy-d);
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px; margin-bottom: 14px;
+  }
+  .how-step h4 { font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .how-step p { color: var(--muted); font-size: 13.5px; }
+
+  .pricing-wrap { display: flex; justify-content: center; }
+  .pricing-card {
+    max-width: 460px; width: 100%;
+    background: white; border-radius: 18px;
+    border: 2px solid var(--navy);
+    overflow: hidden;
+    box-shadow: 0 20px 60px -20px rgba(11,65,105,0.35);
+  }
+  .pricing-card .banner {
+    background: var(--navy); color: white;
+    text-align: center; padding: 14px;
+    font-weight: 700; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .pricing-card .body { padding: 36px; text-align: center; }
+  .pricing-card .price { font-size: 56px; font-weight: 900; color: var(--navy); letter-spacing: -2px; line-height: 1; }
+  .pricing-card .price .cur { font-size: 28px; vertical-align: top; opacity: 0.7; margin-right: 2px; }
+  .pricing-card .price .per { font-size: 16px; color: var(--muted); font-weight: 600; }
+  .pricing-card .pre { font-size: 13px; color: var(--muted); margin: 6px 0 22px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .pricing-card .recur {
+    font-size: 14px; color: var(--green); font-weight: 700;
+    background: #d2f0e0; padding: 8px 14px; border-radius: 999px;
+    display: inline-block; margin-bottom: 26px;
+  }
+  .pricing-card ul { list-style: none; text-align: left; margin-bottom: 28px; }
+  .pricing-card li {
+    padding: 9px 0; font-size: 14.5px; color: var(--ink); display: flex; align-items: flex-start; gap: 10px;
+    border-bottom: 1px dashed #eef2f8;
+  }
+  .pricing-card li:last-child { border-bottom: none; }
+  .pricing-card li::before {
+    content: '✓'; color: var(--green); font-weight: 900; flex-shrink: 0;
+  }
+  .pricing-card .btn { width: 100%; padding: 16px; font-size: 16px; }
+
+  .demo-banner {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-d) 100%);
+    color: white; padding: 50px 30px; border-radius: 14px;
+    text-align: center;
+  }
+  .demo-banner h2 { font-size: 32px; margin-bottom: 12px; color: white; }
+  .demo-banner p { color: rgba(255,255,255,0.85); margin-bottom: 24px; font-size: 17px; }
+  .demo-banner .btn-primary { background: var(--gold); color: var(--navy-d) !important; }
+  .demo-banner .btn-primary:hover { background: var(--gold-l); }
+
+  .faq-list { max-width: 760px; margin: 0 auto; }
+  .faq {
+    background: white; border-radius: 12px;
+    border: 1px solid var(--line); margin-bottom: 12px; overflow: hidden;
+  }
+  .faq summary {
+    padding: 18px 24px; font-weight: 700; font-size: 15.5px; color: var(--ink);
+    cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: '+'; font-size: 22px; color: var(--navy); font-weight: 400; transition: transform 0.2s;
+  }
+  .faq[open] summary::after { transform: rotate(45deg); }
+  .faq p { padding: 0 24px 20px; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+
+  .order-wrap {
+    background: white; border-radius: 16px;
+    padding: 40px; box-shadow: 0 20px 60px -20px rgba(11,65,105,0.20);
+    max-width: 680px; margin: 0 auto;
+  }
+  .order-wrap h3 { font-size: 24px; color: var(--navy); margin-bottom: 8px; font-weight: 800; }
+  .order-wrap p.intro { color: var(--muted); margin-bottom: 26px; }
+  .form-row { display: grid; gap: 16px; margin-bottom: 16px; }
+  .form-row.two { grid-template-columns: 1fr 1fr; }
+  .form-row label {
+    display: block; font-size: 12px; font-weight: 700;
+    color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%; padding: 11px 14px; font-size: 14.5px;
+    border: 1.5px solid var(--line); border-radius: 8px;
+    background: white; font-family: inherit;
+  }
+  .form-row textarea { min-height: 80px; resize: vertical; }
+  .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+    border-color: var(--navy); outline: none;
+  }
+  .order-wrap .total {
+    background: #f8fafc; border-radius: 8px; padding: 16px 20px;
+    margin: 8px 0 20px; display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid var(--line);
+  }
+  .order-wrap .total .lbl { color: var(--muted); font-size: 13px; }
+  .order-wrap .total .amt { font-size: 26px; font-weight: 900; color: var(--navy); }
+  .order-wrap .btn { width: 100%; padding: 16px; font-size: 16px; }
+  .order-wrap .fine { font-size: 11.5px; color: var(--muted); margin-top: 14px; text-align: center; line-height: 1.6; }
+
+  footer { background: var(--navy-d); color: rgba(255,255,255,0.75); padding: 50px 0 30px; }
+  footer .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+  footer .logo { color: white; font-weight: 900; font-size: 22px; }
+  footer .logo .acc { color: var(--gold); }
+  footer .sub { margin-top: 8px; font-size: 13.5px; max-width: 320px; color: rgba(255,255,255,0.6); }
+  footer ul { list-style: none; }
+  footer ul a { color: rgba(255,255,255,0.7); font-size: 13.5px; display: block; padding: 4px 0; }
+  footer ul a:hover { color: white; }
+  footer .bottom {
+    margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.10);
+    font-size: 12.5px; text-align: center; color: rgba(255,255,255,0.5);
+  }
+
+  @media (max-width: 880px) {
+    nav.top ul { display: none; }
+    .hero { padding: 60px 0; }
+    .hero .grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero h1 { font-size: 36px; letter-spacing: -1px; }
+    .hero .lede { font-size: 16px; }
+    .preview-wrap { transform: none; }
+    .compare, .feature-grid, .how-grid { grid-template-columns: 1fr; }
+    .mini-kpis { grid-template-columns: repeat(2, 1fr); }
+    section { padding: 50px 0; }
+    .section-h h2 { font-size: 28px; }
+    .form-row.two { grid-template-columns: 1fr; }
+    .order-wrap { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="container row">
+    <div class="logo">Club<span class="acc">Stats</span></div>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#demo">Live demo</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#order" class="cta">Order now</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container grid">
+    <div>
+      <h1>Stats your selection committee will <span class="h-acc">actually open.</span></h1>
+      <p class="lede">Turn your Play Cricket numbers into a beautiful, shareable dashboard your players and committee will love. Setup in 48 hours. Updated every week of the season.</p>
+      <div class="ctas">
+        <a href="#order" class="btn btn-primary">Order for your club — £199</a>
+        <a href="#demo" class="btn btn-secondary">See live demo →</a>
+      </div>
+      <div class="trust">
+        <span><span class="tick">✓</span> Live in 48 hours</span>
+        <span><span class="tick">✓</span> No tech setup</span>
+        <span><span class="tick">✓</span> Works on phone</span>
+      </div>
+    </div>
+    <div>
+      <div class="preview-wrap">
+        <div class="preview-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="url">clubstats.uk/your-club</div>
+        </div>
+        <div class="mini-dash">
+          <div class="title-row">
+            <h3>Your Club — Stats Dashboard</h3>
+            <span class="pill">2025 · League · All</span>
+          </div>
+          <div class="tabs"><div class="tab active">Batting</div><div class="tab">Bowling</div></div>
+        </div>
+        <div class="mini-kpis">
+          <div class="mini-kpi"><div class="l">Total Runs</div><div class="v">16,275</div></div>
+          <div class="mini-kpi gold"><div class="l">Top Scorer</div><div class="v">773</div><div class="n">H. Weibgen</div></div>
+          <div class="mini-kpi gold"><div class="l">Top Innings</div><div class="v">249</div><div class="n">A. Prakasan</div></div>
+          <div class="mini-kpi"><div class="l">Most 100s</div><div class="v">3</div><div class="n">H. Weibgen</div></div>
+          <div class="mini-kpi"><div class="l">Most 50s</div><div class="v">4</div><div class="n">H. Weibgen</div></div>
+        </div>
+        <div class="mini-table">
+          <table>
+            <thead><tr><th>#</th><th>Player</th><th>Inn</th><th>Runs</th><th>Avg</th><th>HS</th><th>50s</th><th>100s</th></tr></thead>
+            <tbody>
+              <tr class="gold"><td>1</td><td class="pl">Hugh Weibgen</td><td>13</td><td class="r">773</td><td>70.27</td><td>180</td><td>4</td><td>3</td></tr>
+              <tr><td>2</td><td class="pl">Ayush Obhrai</td><td>17</td><td class="r">560</td><td>50.91</td><td>100*</td><td>3</td><td>1</td></tr>
+              <tr><td>3</td><td class="pl">Robbie Hughes</td><td>10</td><td class="r">533</td><td>59.22</td><td>138</td><td>1</td><td>3</td></tr>
+              <tr><td>4</td><td class="pl">Tyrone Visvakula</td><td>14</td><td class="r">527</td><td>47.91</td><td>186*</td><td>2</td><td>1</td></tr>
+              <tr><td>5</td><td class="pl">Daniyal Ahmed</td><td>14</td><td class="r">491</td><td>40.92</td><td>97</td><td>3</td><td>0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="alt">
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">Live working demo</div>
+      <h2>See a real club dashboard.</h2>
+      <p>Sunbury CC's senior batting & bowling stats for 2023–26 — built and refreshed by ClubStats. Try the season chips, swap teams, sort by strike rate, dig into any XI.</p>
+    </div>
+    <div class="demo-banner">
+      <h2 style="font-size: 26px;">Sunbury CC — Senior, 2023–26</h2>
+      <p>Click below — works on desktop or phone. No login required.</p>
+      <a href="https://litter.catbox.moe/e3ot6i.html" target="_blank" rel="noopener" class="btn btn-primary">Open the live dashboard →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">Why ClubStats</div>
+      <h2>Your club deserves <span class="h-acc">better than a spreadsheet.</span></h2>
+      <p>Play Cricket has the data, but the experience is built for one player at a time, behind a login, on a page nobody opens twice.</p>
+    </div>
+    <div class="compare">
+      <div class="card bad">
+        <h3>Play Cricket Statistics</h3>
+        <ul>
+          <li>Requires login for every viewer</li>
+          <li>One filter at a time — no combine</li>
+          <li>Looks like it was built in 2008</li>
+          <li>Hard to share at AGM or on socials</li>
+          <li>No 50s/100s leaderboard, no form table</li>
+          <li>Mobile is an afterthought</li>
+        </ul>
+      </div>
+      <div class="card good">
+        <h3>Your ClubStats Dashboard</h3>
+        <ul>
+          <li>One link to share — no logins</li>
+          <li>Multi-season + multi-team combine</li>
+          <li>Built to look like Sky Cricket</li>
+          <li>Drops into your AGM or WhatsApp</li>
+          <li>Leaderboards, top innings, best spells</li>
+          <li>Beautiful on phone, tablet & laptop</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="alt">
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">What's inside</div>
+      <h2>Everything you'd want from a Wisden-worthy club dashboard.</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature navy">
+        <div class="icon">🏏</div>
+        <h3>Batting & Bowling tabs</h3>
+        <p>Full leaderboards for runs, average, strike rate, 50s, 100s — and on the bowling side, wickets, economy, best figures, five-fers.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📅</div>
+        <h3>Multi-season combine</h3>
+        <p>Click any seasons you want — 2023 + 2025, or all years — and the numbers correctly recompute. Averages and strike rates aren't naively averaged; they're properly re-derived.</p>
+      </div>
+      <div class="feature green">
+        <div class="icon">👥</div>
+        <h3>Multi-XI breakdown</h3>
+        <p>Filter by 1st XI, 2nd XI, or any combination. Per-XI top-5 panels for every competition. Selection committees love this view.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⭐</div>
+        <h3>Top performance lists</h3>
+        <p>Standout individual innings and best bowling spells, with the date and opposition. Perfect for awards nights and end-of-season write-ups.</p>
+      </div>
+      <div class="feature navy">
+        <div class="icon">📈</div>
+        <h3>Year-on-year trend</h3>
+        <p>Pick 2+ seasons and a per-year trend strip lights up automatically — see who's getting better, who's tailing off, who's the new find.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📱</div>
+        <h3>Beautiful on every device</h3>
+        <p>Loads instantly on a phone in the pavilion, looks the part on a big screen at the AGM, opens for anyone you send the link to.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">How it works</div>
+      <h2>Live in 48 hours. No tech required.</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="num">1</div>
+        <h4>Order</h4>
+        <p>Order below for £199. Tell us your club's Play Cricket address and which XIs to include.</p>
+      </div>
+      <div class="how-step">
+        <div class="num">2</div>
+        <h4>We do the work</h4>
+        <p>Within 48 hours we pull every senior stat from the last four seasons, in your club colours.</p>
+      </div>
+      <div class="how-step">
+        <div class="num">3</div>
+        <h4>Get your URL</h4>
+        <p>You receive <strong>clubstats.uk/yourclub</strong> — share with the committee, players, and your members.</p>
+      </div>
+      <div class="how-step">
+        <div class="num">4</div>
+        <h4>Weekly refresh</h4>
+        <p>Every Sunday night during the season, we re-capture and update. The URL never changes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="alt">
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">Pricing</div>
+      <h2>One price. <span class="h-acc">No surprises.</span></h2>
+      <p>Cheaper than a new set of bails for the third team, more useful than half the kit in the changing room.</p>
+    </div>
+    <div class="pricing-wrap">
+      <div class="pricing-card">
+        <div class="banner">Senior cricket — 1st through 6th XI</div>
+        <div class="body">
+          <div class="price"><span class="cur">£</span>199<span class="per">.99</span></div>
+          <div class="pre">Setup + first year</div>
+          <div class="recur">Just £99.99/year after</div>
+          <ul>
+            <li>Full setup in 48 hours</li>
+            <li>Last 4 seasons of stats included</li>
+            <li>Batting + Bowling dashboards</li>
+            <li>Multi-season & multi-XI combine</li>
+            <li>Weekly auto-refresh during season</li>
+            <li>Your club crest & colours</li>
+            <li>Permanent URL (clubstats.uk/yourclub)</li>
+            <li>End-of-season PDF for the AGM</li>
+            <li>Email support all year</li>
+          </ul>
+          <a href="#order" class="btn btn-primary">Order for your club</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="order">
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">Order in 60 seconds</div>
+      <h2>Get your dashboard live by the weekend.</h2>
+      <p>Fill in the form — we'll be in touch within an hour to confirm and arrange Play Cricket access.</p>
+    </div>
+    <div class="order-wrap">
+      <h3>Your club's dashboard</h3>
+      <p class="intro">No payment taken yet — we confirm details first, then send a Stripe link.</p>
+      <form action="mailto:hello@clubstats.uk" method="post" enctype="text/plain">
+        <div class="form-row two">
+          <div>
+            <label for="clubname">Club name</label>
+            <input type="text" id="clubname" name="clubname" placeholder="e.g. Sunbury CC" required>
+          </div>
+          <div>
+            <label for="subdomain">Play Cricket subdomain</label>
+            <input type="text" id="subdomain" name="subdomain" placeholder="the bit before .play-cricket.com" required>
+          </div>
+        </div>
+        <div class="form-row two">
+          <div>
+            <label for="contact">Your name</label>
+            <input type="text" id="contact" name="contact" placeholder="Jane Captain" required>
+          </div>
+          <div>
+            <label for="role">Your role at the club</label>
+            <input type="text" id="role" name="role" placeholder="e.g. Chair of Selection" required>
+          </div>
+        </div>
+        <div class="form-row two">
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="jane@yourclub.co.uk" required>
+          </div>
+          <div>
+            <label for="phone">Phone (optional)</label>
+            <input type="tel" id="phone" name="phone" placeholder="+44 ...">
+          </div>
+        </div>
+        <div class="form-row two">
+          <div>
+            <label for="teams">Teams to include</label>
+            <select id="teams" name="teams">
+              <option>1st XI only</option>
+              <option>1st & 2nd XI</option>
+              <option>1st, 2nd, 3rd XI</option>
+              <option selected>All senior XIs we have</option>
+              <option>Senior + junior sections (extra £49)</option>
+            </select>
+          </div>
+          <div>
+            <label for="colours">Club colours</label>
+            <input type="text" id="colours" name="colours" placeholder="e.g. Navy & gold">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="notes">Anything else we should know?</label>
+          <textarea id="notes" name="notes" placeholder="Optional — anything specific you want highlighted, deadlines, etc."></textarea>
+        </div>
+        <div class="total">
+          <div><div class="lbl">Today's order</div><strong>Setup + first year</strong></div>
+          <div class="amt">£199.99</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit order →</button>
+        <p class="fine">By submitting, you agree to our terms. We'll be in touch within one hour during UK business hours. Payment via Stripe after we've confirmed details. £99.99 annual renewal each season — cancel anytime, no questions asked.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="alt">
+  <div class="container">
+    <div class="section-h">
+      <div class="eyebrow">FAQ</div>
+      <h2>Things clubs ask before they order.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq" open>
+        <summary>Do you need our Play Cricket login?</summary>
+        <p>Yes — briefly. The full stats page on Play Cricket sits behind sign-in, so we need access to capture your numbers. We'll arrange this securely on a quick screen-share (10 minutes), or you can paste a one-time login into a password manager link we send you. We don't store credentials.</p>
+      </details>
+      <details class="faq">
+        <summary>How current are the stats?</summary>
+        <p>On setup we pull every match from the last four seasons. During the season, we re-capture every Sunday night so Monday morning your URL is fresh.</p>
+      </details>
+      <details class="faq">
+        <summary>Can I include the junior section too?</summary>
+        <p>Yes — Under-9 through Under-18 cricket can be added as a bolt-on for £49. We add a separate "Junior" mode to the dashboard so seniors and juniors stay clearly separated.</p>
+      </details>
+      <details class="faq">
+        <summary>Who can see the URL?</summary>
+        <p>Anyone you share it with — no login. Treat it like an unlisted YouTube video: not advertised, not indexed by Google, but viewable by anyone with the URL. If you'd rather have password protection, we offer that as a £30 add-on.</p>
+      </details>
+      <details class="faq">
+        <summary>What's included in the £99/year renewal?</summary>
+        <p>Weekly stats refresh through every season, all new feature releases (we ship most weeks), continued hosting, and email support. If a season ends and you don't want to renew, the dashboard stops updating but stays live for the rest of the calendar year as a free archive.</p>
+      </details>
+      <details class="faq">
+        <summary>What about T20s, midweek leagues, friendlies?</summary>
+        <p>All competitions Play Cricket records show up — we let you filter by League / Cup / Friendly / League & Cup combined. Indoor and Pairs use slightly different scoring; if your club plays those, mention it on the order form and we'll configure separately.</p>
+      </details>
+      <details class="faq">
+        <summary>Can we put it on our own club website?</summary>
+        <p>Absolutely. The URL embeds in any club website via a single iframe tag. We'll send you the snippet on delivery.</p>
+      </details>
+      <details class="faq">
+        <summary>Refunds?</summary>
+        <p>If the dashboard doesn't go live in 48 hours, full refund. If you change your mind in the first 30 days, full refund. After that, annual renewal can be cancelled any time and you keep access through the end of the paid year.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div>
+        <div class="logo">Club<span class="acc">Stats</span></div>
+        <p class="sub">Beautiful, shareable cricket dashboards for grassroots clubs across the UK. Built by club cricketers, for club cricketers.</p>
+      </div>
+      <ul>
+        <li style="color:rgba(255,255,255,0.5); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Product</li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#demo">Live demo</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <ul>
+        <li style="color:rgba(255,255,255,0.5); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Company</li>
+        <li><a href="mailto:hello@clubstats.uk">hello@clubstats.uk</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+    <div class="bottom">© 2026 ClubStats. Not affiliated with the ECB or Play Cricket. Data sourced with each club's authorisation.</div>
+  </div>
+</footer>
+
+</body>
+</html>

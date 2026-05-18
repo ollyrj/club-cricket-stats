@@ -1,0 +1,62 @@
+name: Weekly stats refresh
+
+on:
+  schedule:
+    # Every Sunday at 22:00 UTC (~23:00 BST during cricket season)
+    - cron: '0 22 * * 0'
+  workflow_dispatch:
+    inputs:
+      club:
+        description: 'Single club slug (leave empty to refresh all)'
+        required: false
+        type: string
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run scraper
+        env:
+          # One pair of env vars per club; see scraper/clubs.config.ts
+          PC_SUNBURY_EMAIL:   ${{ secrets.PC_SUNBURY_EMAIL }}
+          PC_SUNBURY_PASS:    ${{ secrets.PC_SUNBURY_PASS }}
+          PC_ROEGREEN_EMAIL:  ${{ secrets.PC_ROEGREEN_EMAIL }}
+          PC_ROEGREEN_PASS:   ${{ secrets.PC_ROEGREEN_PASS }}
+        run: |
+          if [ -n "${{ inputs.club }}" ]; then
+            npm run scrape -- --club="${{ inputs.club }}"
+          else
+            npm run scrape:all
+          fi
+
+      - name: Commit any data changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'data: weekly refresh'
+          file_pattern: 'data/**/*.json'
+          commit_user_name: clubstats-bot
+          commit_user_email: bot@clubstats.uk
+
+      - name: Notify on failure
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_FAILURE }}
+          SLACK_TITLE: 'ClubStats refresh failed'
+          SLACK_MESSAGE: 'Weekly scrape failed — see Actions logs.'
