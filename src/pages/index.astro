@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/global.css";
+---
+
+<BaseLayout title="ClubStats — Cricket Dashboards">
+  <main
+    class="flex min-h-screen flex-col items-center justify-center px-4 text-center"
+  >
+    <h1 class="text-5xl font-extrabold tracking-tight text-navy sm:text-6xl">
+      Club<span class="text-gold">Stats</span>
+    </h1>
+    <p class="mt-4 max-w-md text-lg text-gray-600">
+      Beautiful, shareable cricket dashboards for UK cricket clubs. Coming soon.
+    </p>
+    <div class="mt-8 flex gap-4">
+      <a
+        href="/sunbury"
+        class="rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-dark"
+      >
+        Sunbury CC
+      </a>
+      <a
+        href="/roegreen"
+        class="rounded-lg border border-navy px-5 py-2.5 text-sm font-semibold text-navy transition hover:bg-navy hover:text-white"
+      >
+        Roe Green CC
+      </a>
+    </div>
+  </main>
+</BaseLayout>
