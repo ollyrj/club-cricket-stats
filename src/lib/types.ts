@@ -54,9 +54,11 @@ export type DashboardData = {
 };
 
 export type ByGameType<T> = {
-  [gt in "League" | "Cup" | "Friendly" | "All"]?: {
-    [team: string]: T[];
-  };
+  [gt: string]:
+    | {
+        [team: string]: T[];
+      }
+    | undefined;
 };
 
 export type BatRow = [
