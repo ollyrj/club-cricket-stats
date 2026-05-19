@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { chromium } from "playwright";
 import pLimit from "p-limit";
 import type { ClubConfig } from "./clubs.config";
@@ -14,9 +16,46 @@ import { fetchAndParse, type FetchStats } from "./fetcher";
 import { buildPlayerPerfs } from "./player-perfs";
 import { writeDashboardData } from "./output";
 
-export async function scrapeClub(config: ClubConfig): Promise<void> {
+/**
+ * Load existing dashboard_data.json for merging in weekly-update mode.
+ */
+function loadExistingData(slug: string): DashboardData | null {
+  const filePath = path.resolve("data", slug, "dashboard_data.json");
+  if (!fs.existsSync(filePath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8")) as DashboardData;
+  } catch {
+    console.warn(`  ⚠ Could not parse existing data for ${slug}, doing full scrape`);
+    return null;
+  }
+}
+
+export async function scrapeClub(
+  config: ClubConfig,
+  seasonOverride?: string,
+): Promise<void> {
   const start = Date.now();
-  console.log(`\n▶ Scraping ${config.name} (${config.slug})`);
+
+  // Determine which seasons to scrape
+  const seasonsToScrape = seasonOverride
+    ? [seasonOverride]
+    : config.enabledSeasons;
+
+  // In weekly mode, load existing data and merge the new season into it
+  let existingData: DashboardData | null = null;
+  if (seasonOverride) {
+    existingData = loadExistingData(config.slug);
+    if (!existingData) {
+      console.warn(
+        `  No existing data found for ${config.slug} — doing full scrape instead`,
+      );
+    }
+    console.log(
+      `\n▶ Weekly update: ${config.name} (${config.slug}) — season ${seasonOverride} only`,
+    );
+  } else {
+    console.log(`\n▶ Full scrape: ${config.name} (${config.slug})`);
+  }
 
   const { email, password } = resolveCredentials(config.slug);
 
@@ -40,7 +79,8 @@ export async function scrapeClub(config: ClubConfig): Promise<void> {
       ),
     ];
 
-    const data: DashboardData = {
+    // Start from existing data or build a fresh skeleton
+    const data: DashboardData = existingData ?? {
       schemaVersion: 1,
       seasons: config.enabledSeasons,
       gameTypes: GAME_TYPES.map(
@@ -87,9 +127,15 @@ export async function scrapeClub(config: ClubConfig): Promise<void> {
       },
     };
 
+    // Always update capturedAt timestamp
+    data.meta.capturedAt = new Intl.DateTimeFormat("en-GB", {
+      month: "long",
+      year: "numeric",
+    }).format(new Date());
+
     const tasks: (() => Promise<void>)[] = [];
 
-    for (const year of config.enabledSeasons) {
+    for (const year of seasonsToScrape) {
       const seasonId = SEASON_IDS[year];
       if (!seasonId) {
         console.warn(`  ⚠ Unknown season ${year}, skipping`);
