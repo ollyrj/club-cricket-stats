@@ -461,74 +461,45 @@
   margin: 14px auto 0;
 }
 
-/* Compare */
-.landing .compare {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-.landing .compare .card {
-  padding: 30px;
+/* Benefits card */
+.landing .benefits-card {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 36px 40px;
   border-radius: 14px;
-  background: white;
-  border: 1px solid var(--line);
-}
-.landing .compare .card.bad {
-  border-top: 4px solid #cc6666;
-}
-.landing .compare .card.good {
   border-top: 4px solid var(--green);
   background: linear-gradient(180deg, #f3fbf7 0%, white 60%);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--green);
 }
-.landing .compare .card h3 {
-  margin-bottom: 14px;
-  font-size: 18px;
-  color: var(--ink);
-}
-.landing .compare .card ul {
+.landing .benefits-card ul {
   list-style: none;
 }
-.landing .compare .card li {
-  padding: 7px 0;
-  font-size: 15px;
-  color: var(--muted);
+.landing .benefits-card li {
+  padding: 10px 0;
+  font-size: 16px;
+  color: var(--ink);
   position: relative;
-  padding-left: 28px;
+  padding-left: 32px;
+  border-bottom: 1px dashed #eef2f8;
 }
-.landing .compare .card li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 11px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
+.landing .benefits-card li:last-child {
+  border-bottom: none;
 }
-.landing .compare .card.bad li::before {
-  background: #fbe0e0;
-}
-.landing .compare .card.bad li::after {
-  content: "\00d7";
-  position: absolute;
-  left: 4px;
-  top: 7px;
-  color: #cc6666;
-  font-weight: 900;
-  font-size: 15px;
-  line-height: 1;
-}
-.landing .compare .card.good li::before {
-  background: #d2f0e0;
-}
-.landing .compare .card.good li::after {
+.landing .benefits-card li::before {
   content: "\2713";
   position: absolute;
-  left: 4px;
-  top: 8px;
+  left: 0;
+  top: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #d2f0e0;
   color: var(--green);
   font-weight: 900;
   font-size: 13px;
-  line-height: 1;
+  line-height: 20px;
+  text-align: center;
 }
 
 /* Features */
@@ -883,6 +854,12 @@
   color: var(--muted);
   font-size: 13px;
 }
+.landing .order-wrap .total .extras-line {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
 .landing .order-wrap .total .amt {
   font-size: 26px;
   font-weight: 900;
@@ -970,11 +947,13 @@
   .landing .preview-wrap {
     transform: none;
   }
-  .landing .compare,
   .landing .feature-grid,
   .landing .how-grid,
   .landing .testimonial-grid {
     grid-template-columns: 1fr;
+  }
+  .landing .benefits-card {
+    padding: 24px;
   }
   .landing .proof-clubs {
     grid-template-columns: repeat(2, 1fr);

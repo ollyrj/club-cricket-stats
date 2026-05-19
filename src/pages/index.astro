@@ -9,10 +9,10 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Do you need our Play Cricket login?",
+      name: "Do you need access to our Play Cricket?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — briefly. The full stats page on Play Cricket sits behind sign-in, so we need access to capture your numbers. We arrange this securely on a quick screen-share or via a password manager link.",
+        text: "No. We pull everything from the publicly available stats pages — you don't need to share any logins or passwords. Just tell us your club name and which XIs to include.",
       },
     },
     {
@@ -90,7 +90,7 @@ const orgSchema = {
       <div class="container row">
         <div class="logo">Club<span class="acc">Stats</span></div>
         <ul>
-          <li><a href="#features">Features</a></li>
+          <li><a href="#why">Features</a></li>
           <li><a href="#demo">Live demo</a></li>
           <li><a href="#how">How it works</a></li>
           <li><a href="#pricing">Pricing</a></li>
@@ -300,7 +300,7 @@ const orgSchema = {
       </div>
     </section>
 
-    <section class="alt">
+    <section id="why" class="alt">
       <div class="container">
         <div class="section-h">
           <div class="eyebrow">Why ClubStats</div>
@@ -310,37 +310,23 @@ const orgSchema = {
             >
           </h2>
           <p>
-            Play Cricket has the data, but the experience is built for one
-            player at a time, behind a login, on a page nobody opens twice.
+            One link. No logins. Updated every week. Here's what you get.
           </p>
         </div>
-        <div class="compare">
-          <div class="card bad">
-            <h3>Play Cricket Statistics</h3>
-            <ul>
-              <li>Requires login for every viewer</li>
-              <li>One filter at a time &mdash; no combine</li>
-              <li>Looks like it was built in 2008</li>
-              <li>Hard to share at AGM or on socials</li>
-              <li>No 50s/100s leaderboard, no form table</li>
-              <li>Mobile is an afterthought</li>
-            </ul>
-          </div>
-          <div class="card good">
-            <h3>Your ClubStats Dashboard</h3>
-            <ul>
-              <li>One link to share &mdash; no logins</li>
-              <li>Multi-season + multi-team combine</li>
-              <li>Built to look like Sky Cricket</li>
-              <li>Drops into your AGM or WhatsApp</li>
-              <li>Leaderboards, top innings, best spells</li>
-              <li>Beautiful on phone, tablet &amp; laptop</li>
-            </ul>
-          </div>
+        <div class="benefits-card">
+          <ul>
+            <li><strong>Every player can see their stats</strong> &mdash; one link, no logins, share it in the WhatsApp group and watch the dressing room light up</li>
+            <li><strong>Works on any device</strong> &mdash; looks great on a phone in the pavilion, a laptop at committee, or a projector at the AGM</li>
+            <li><strong>Selection decisions backed by data</strong> &mdash; filter by XI, season, and competition to see who's actually performing</li>
+            <li><strong>All your batting &amp; bowling in one place</strong> &mdash; leaderboards, averages, strike rates, top innings, best spells, 50s, 100s, five-fers</li>
+            <li><strong>Up to 10 years of history</strong> &mdash; combine any seasons to settle the bar debate about who really was the best number 3</li>
+            <li><strong>Updated every week</strong> &mdash; fresh stats every Monday morning, all season long, no effort from you</li>
+          </ul>
         </div>
       </div>
     </section>
 
+    <!-- Features section commented out — duplicates the benefits card above
     <section id="features" class="alt">
       <div class="container">
         <div class="section-h">
@@ -403,6 +389,7 @@ const orgSchema = {
         </div>
       </div>
     </section>
+    -->
 
     <section class="testimonials">
       <div class="container">
@@ -467,8 +454,8 @@ const orgSchema = {
             <div class="num">1</div>
             <h4>Order</h4>
             <p>
-              Order below for &pound;125. Tell us your club's Play Cricket
-              address and which XIs to include.
+              Order below for &pound;125. Give us your requirements
+              and we'll get to work.
             </p>
           </div>
           <div class="how-step">
@@ -625,11 +612,11 @@ const orgSchema = {
               <div>
                 <label for="teams">Teams to include</label>
                 <select id="teams" name="teams">
-                  <option>1st XI only</option>
-                  <option>1st &amp; 2nd XI</option>
-                  <option>1st, 2nd, 3rd XI</option>
-                  <option selected>All senior XIs we have</option>
-                  <option>Senior + junior sections (extra &pound;49)</option>
+                  <option data-extra="0">1st XI only</option>
+                  <option data-extra="0">1st &amp; 2nd XI</option>
+                  <option data-extra="0">1st, 2nd, 3rd XI</option>
+                  <option data-extra="0" selected>All senior XIs we have</option>
+                  <option data-extra="49">Senior + junior sections (+&pound;49)</option>
                 </select>
               </div>
               <div>
@@ -654,15 +641,16 @@ const orgSchema = {
               <div>
                 <div class="lbl">Today's order</div>
                 <strong>Setup + first year</strong>
+                <div id="extras-line" class="extras-line" style="display:none;"></div>
               </div>
-              <div class="amt"><span class="was-sm">&pound;199</span> &pound;125</div>
+              <div class="amt" id="order-total"><span class="was-sm" id="was-price">&pound;199</span> &pound;<span id="total-price">125</span></div>
             </div>
-            <button type="submit" class="btn btn-primary"
-              >Pay &pound;125 securely &rarr;</button
+            <button type="submit" class="btn btn-primary" id="pay-btn"
+              >Pay &pound;<span id="btn-price">125</span> securely &rarr;</button
             >
             <p class="fine">
               Secure payment via Stripe. We'll be in touch within one hour
-              during UK business hours to arrange Play Cricket access.
+              during UK business hours to get started.
               &pound;99.99 annual renewal each season &mdash; cancel anytime,
               no questions asked. Launch price for the first 20 clubs only.
             </p>
@@ -679,13 +667,12 @@ const orgSchema = {
         </div>
         <div class="faq-list">
           <details class="faq" open>
-            <summary>Do you need our Play Cricket login?</summary>
+            <summary>Do you need access to our Play Cricket?</summary>
             <p>
-              Yes &mdash; briefly. The full stats page on Play Cricket sits
-              behind sign-in, so we need access to capture your numbers. We'll
-              arrange this securely on a quick screen-share (10 minutes), or you
-              can paste a one-time login into a password manager link we send
-              you. We don't store credentials.
+              No. We pull everything from the publicly available stats pages
+              &mdash; you don't need to share any logins or passwords. Just
+              tell us your club name and which XIs to include, and we handle
+              the rest.
             </p>
           </details>
           <details class="faq">
@@ -757,6 +744,35 @@ const orgSchema = {
       // TODO: Replace with your Stripe Payment Link URL
       const STRIPE_LINK = "https://buy.stripe.com/REPLACE_ME";
 
+      const BASE_PRICE = 125;
+      const WAS_PRICE = 199;
+      const teamsSelect = document.getElementById("teams");
+      const totalPrice = document.getElementById("total-price");
+      const btnPrice = document.getElementById("btn-price");
+      const wasPrice = document.getElementById("was-price");
+      const extrasLine = document.getElementById("extras-line");
+
+      function updatePrice() {
+        const selected = teamsSelect.options[teamsSelect.selectedIndex];
+        const extra = parseInt(selected.dataset.extra || "0", 10);
+        const total = BASE_PRICE + extra;
+        const was = WAS_PRICE + extra;
+
+        totalPrice.textContent = total;
+        btnPrice.textContent = total;
+        wasPrice.innerHTML = "&pound;" + was;
+
+        if (extra > 0) {
+          extrasLine.style.display = "block";
+          extrasLine.innerHTML =
+            "Includes junior sections (+&pound;" + extra + ")";
+        } else {
+          extrasLine.style.display = "none";
+        }
+      }
+
+      teamsSelect.addEventListener("change", updatePrice);
+
       document
         .getElementById("order-form")
         .addEventListener("submit", function (e) {
@@ -767,7 +783,6 @@ const orgSchema = {
             "prefilled_email",
             f.get("email") || "",
           );
-          // Stripe Payment Links support client_reference_id for tracking
           const ref = [
             f.get("clubname"),
             f.get("subdomain"),
