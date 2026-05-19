@@ -23,11 +23,33 @@ const { slug } = Astro.props;
 const data: DashboardData = loadClubData(slug);
 const theme = getTheme(slug);
 const clubName = data.meta.club;
+const seasons = data.seasons;
+const seasonRange =
+  seasons.length > 1
+    ? `${seasons[0]}–${seasons[seasons.length - 1]}`
+    : seasons[0];
+const teamCount = data.teams.filter((t: string) => t !== "All").length;
+
+const clubSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: `${clubName} Cricket Statistics`,
+  description: `Batting and bowling statistics for ${clubName}, ${seasonRange}. Leaderboards, averages, top performances, and season trends across ${teamCount} XIs.`,
+  url: `https://clubcricketstats.com/${slug}`,
+  isPartOf: {
+    "@type": "WebSite",
+    name: "ClubStats",
+    url: "https://clubcricketstats.com",
+  },
+};
 ---
 
 <BaseLayout
-  title={`${clubName} — ClubStats`}
-  description={`Cricket stats dashboard for ${clubName}`}
+  title={`${clubName} Cricket Stats ${seasonRange} — Batting & Bowling Dashboard`}
+  description={`${clubName} batting and bowling statistics for ${seasonRange}. Leaderboards, averages, strike rates, top performances, and season trends across ${teamCount} XIs. Updated weekly.`}
+  ogTitle={`${clubName} — Cricket Stats Dashboard`}
+  ogDescription={`Batting & bowling leaderboards for ${clubName}. ${seasonRange} seasons, ${teamCount} XIs. View stats, averages, and top performances.`}
+  jsonLd={clubSchema}
 >
   <Dashboard client:load data={data} theme={theme} />
 </BaseLayout>

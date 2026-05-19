@@ -2,11 +2,88 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/global.css";
 import "../styles/landing.css";
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Do you need our Play Cricket login?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes — briefly. The full stats page on Play Cricket sits behind sign-in, so we need access to capture your numbers. We arrange this securely on a quick screen-share or via a password manager link.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How current are the stats?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "On setup we pull every match from the last four seasons. During the season, we re-capture every Sunday night so Monday morning your URL is fresh.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I include the junior section too?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes — Under-9 through Under-18 cricket can be added as a bolt-on for £49. We add a separate Junior mode to the dashboard.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What's included in the £99/year renewal?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Weekly stats refresh through every season, all new feature releases, continued hosting, and email support. Cancel anytime.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can we put it on our own club website?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Absolutely. The URL embeds in any club website via a single iframe tag. We send you the snippet on delivery.",
+      },
+    },
+  ],
+};
+
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "ClubStats Cricket Dashboard",
+  description:
+    "Turn your Play Cricket statistics into a beautiful, shareable dashboard. Batting & bowling leaderboards, multi-season combine, weekly auto-refresh.",
+  brand: { "@type": "Brand", name: "ClubStats" },
+  offers: {
+    "@type": "Offer",
+    price: "199.99",
+    priceCurrency: "GBP",
+    availability: "https://schema.org/InStock",
+    priceValidUntil: "2026-12-31",
+    url: "https://clubcricketstats.com/#order",
+  },
+};
+
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ClubStats",
+  url: "https://clubcricketstats.com",
+  email: "hello@clubcricketstats.com",
+  description:
+    "Beautiful, shareable cricket dashboards for grassroots clubs across the UK.",
+};
 ---
 
 <BaseLayout
-  title="ClubStats — Beautiful cricket dashboards for your club"
-  description="Turn your Play Cricket stats into a beautiful, shareable dashboard. Setup in 48 hours. £199 first year, £99/year after."
+  title="ClubStats — Turn your Play Cricket stats into a dashboard your club will love"
+  description="Turn your Play Cricket club statistics into a beautiful, shareable dashboard. Batting & bowling leaderboards, multi-season combine, weekly auto-refresh. Used by ECB Premier League clubs. £199 setup, live in 48 hours."
+  ogTitle="ClubStats — Cricket dashboards your club will actually open"
+  ogDescription="Turn your Play Cricket stats into a beautiful dashboard. Batting leaderboards, bowling spells, multi-season combine. Live in 48 hours. From £199."
+  jsonLd={[faqSchema, productSchema, orgSchema]}
 >
   <div class="landing">
     <nav class="top">
@@ -32,8 +109,9 @@ import "../styles/landing.css";
             >
           </h1>
           <p class="lede">
-            Turn your Play Cricket numbers into a beautiful, shareable dashboard
-            your players and committee will love. Setup in 48 hours. Updated
+            Turn your <strong>Play Cricket</strong> stats into a beautiful,
+            shareable dashboard your players and committee will love. No logins,
+            no spreadsheets &mdash; just one link. Live in 48 hours, updated
             every week of the season.
           </p>
           <div class="ctas">
