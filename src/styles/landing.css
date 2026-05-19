@@ -731,7 +731,7 @@
   background: linear-gradient(135deg, var(--navy) 0%, var(--navy-d) 100%);
   color: white;
   padding: 50px 30px;
-  border-radius: 14px;
+  border-radius: 14px 14px 0 0;
   text-align: center;
 }
 .landing .demo-banner h2 {
@@ -750,6 +750,23 @@
 }
 .landing .demo-banner .btn-primary:hover {
   background: var(--gold-l);
+}
+.landing .demo-banner .demo-upsell {
+  margin-top: 28px;
+  margin-bottom: 14px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 24px;
+}
+.landing .demo-banner .btn-secondary-light {
+  background: transparent;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+.landing .demo-banner .btn-secondary-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: white;
 }
 
 /* FAQ */
