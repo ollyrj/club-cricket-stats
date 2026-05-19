@@ -554,14 +554,10 @@ const orgSchema = {
         <div class="order-wrap">
           <h3>Your club's dashboard</h3>
           <p class="intro">
-            No payment taken yet &mdash; we confirm details first, then send a
-            Stripe link.
+            Fill in your details, then pay securely via Stripe. We'll have your
+            dashboard live within 48 hours.
           </p>
-          <form
-            action="mailto:hello@clubcricketstats.com"
-            method="post"
-            enctype="text/plain"
-          >
+          <form id="order-form">
             <div class="form-row two">
               <div>
                 <label for="clubname">Club name</label>
@@ -664,13 +660,13 @@ const orgSchema = {
               <div class="amt"><span class="was-sm">&pound;199</span> &pound;125</div>
             </div>
             <button type="submit" class="btn btn-primary"
-              >Submit order &rarr;</button
+              >Pay &pound;125 securely &rarr;</button
             >
             <p class="fine">
-              By submitting, you agree to our terms. We'll be in touch within
-              one hour during UK business hours. &pound;99.99 annual renewal
-              each season &mdash; cancel anytime, no questions asked. Launch
-              price available for the first 20 clubs only.
+              Secure payment via Stripe. We'll be in touch within one hour
+              during UK business hours to arrange Play Cricket access.
+              &pound;99.99 annual renewal each season &mdash; cancel anytime,
+              no questions asked. Launch price for the first 20 clubs only.
             </p>
           </form>
         </div>
@@ -758,6 +754,38 @@ const orgSchema = {
         </div>
       </div>
     </section>
+
+    <script is:inline>
+      // TODO: Replace with your Stripe Payment Link URL
+      const STRIPE_LINK = "https://buy.stripe.com/REPLACE_ME";
+
+      document
+        .getElementById("order-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const f = new FormData(this);
+          const params = new URLSearchParams();
+          params.set(
+            "prefilled_email",
+            f.get("email") || "",
+          );
+          // Stripe Payment Links support client_reference_id for tracking
+          const ref = [
+            f.get("clubname"),
+            f.get("subdomain"),
+            f.get("contact"),
+            f.get("role"),
+            f.get("phone"),
+            f.get("teams"),
+            f.get("colours"),
+            f.get("notes"),
+          ]
+            .filter(Boolean)
+            .join(" | ");
+          params.set("client_reference_id", ref.slice(0, 200));
+          window.location.href = STRIPE_LINK + "?" + params.toString();
+        });
+    </script>
 
     <footer>
       <div class="container">
