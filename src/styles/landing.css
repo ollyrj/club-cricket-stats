@@ -662,6 +662,23 @@
   color: var(--muted);
   font-weight: 600;
 }
+.landing .pricing-card .price-slashed {
+  margin-bottom: 4px;
+}
+.landing .pricing-card .price-slashed .was {
+  font-size: 22px;
+  color: #cc6666;
+  text-decoration: line-through;
+  font-weight: 700;
+  opacity: 0.7;
+}
+.landing .was-sm {
+  font-size: 16px;
+  color: #cc6666;
+  text-decoration: line-through;
+  font-weight: 600;
+  margin-right: 6px;
+}
 .landing .pricing-card .pre {
   font-size: 13px;
   color: var(--muted);

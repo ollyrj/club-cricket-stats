@@ -59,7 +59,7 @@ const productSchema = {
   brand: { "@type": "Brand", name: "ClubStats" },
   offers: {
     "@type": "Offer",
-    price: "199.99",
+    price: "125.00",
     priceCurrency: "GBP",
     availability: "https://schema.org/InStock",
     priceValidUntil: "2026-12-31",
@@ -80,9 +80,9 @@ const orgSchema = {
 
 <BaseLayout
   title="ClubStats — Turn your Play Cricket stats into a dashboard your club will love"
-  description="Turn your Play Cricket club statistics into a beautiful, shareable dashboard. Batting & bowling leaderboards, multi-season combine, weekly auto-refresh. Used by ECB Premier League clubs. £199 setup, live in 48 hours."
+  description="Turn your Play Cricket club statistics into a beautiful, shareable dashboard. Batting & bowling leaderboards, multi-season combine, weekly auto-refresh. Used by ECB Premier League clubs. £125 launch offer, live in 48 hours."
   ogTitle="ClubStats — Cricket dashboards your club will actually open"
-  ogDescription="Turn your Play Cricket stats into a beautiful dashboard. Batting leaderboards, bowling spells, multi-season combine. Live in 48 hours. From £199."
+  ogDescription="Turn your Play Cricket stats into a beautiful dashboard. Batting leaderboards, bowling spells, multi-season combine. Live in 48 hours. Launch offer £125."
   jsonLd={[faqSchema, productSchema, orgSchema]}
 >
   <div class="landing">
@@ -116,7 +116,7 @@ const orgSchema = {
           </p>
           <div class="ctas">
             <a href="#order" class="btn btn-primary"
-              >Order for your club &mdash; &pound;199</a
+              >Order for your club &mdash; &pound;125</
             >
             <a href="#demo" class="btn btn-secondary">See live demo &rarr;</a>
           </div>
@@ -296,7 +296,7 @@ const orgSchema = {
             Like what you see? Get the same for your club.
           </p>
           <a href="#order" class="btn btn-primary"
-            >Order for your club &mdash; &pound;199 &rarr;</a
+            >Order for your club &mdash; &pound;125 &rarr;</
           >
         </div>
       </div>
@@ -469,7 +469,7 @@ const orgSchema = {
             <div class="num">1</div>
             <h4>Order</h4>
             <p>
-              Order below for &pound;199. Tell us your club's Play Cricket
+              Order below for &pound;125. Tell us your club's Play Cricket
               address and which XIs to include.
             </p>
           </div>
@@ -513,12 +513,15 @@ const orgSchema = {
         </div>
         <div class="pricing-wrap">
           <div class="pricing-card">
-            <div class="banner">Senior cricket &mdash; 1st through 6th XI</div>
+            <div class="banner">&#127881; Launch offer &mdash; first 20 clubs only</div>
             <div class="body">
-              <div class="price">
-                <span class="cur">&pound;</span>199<span class="per">.99</span>
+              <div class="price-slashed">
+                <span class="was">&pound;199</span>
               </div>
-              <div class="pre">Setup + first year</div>
+              <div class="price">
+                <span class="cur">&pound;</span>125
+              </div>
+              <div class="pre">Setup + first year &mdash; save &pound;74</div>
               <div class="recur">Just &pound;99.99/year after</div>
               <ul>
                 <li>Full setup in 48 hours</li>
@@ -658,16 +661,16 @@ const orgSchema = {
                 <div class="lbl">Today's order</div>
                 <strong>Setup + first year</strong>
               </div>
-              <div class="amt">&pound;199.99</div>
+              <div class="amt"><span class="was-sm">&pound;199</span> &pound;125</div>
             </div>
             <button type="submit" class="btn btn-primary"
               >Submit order &rarr;</button
             >
             <p class="fine">
               By submitting, you agree to our terms. We'll be in touch within
-              one hour during UK business hours. Payment via Stripe after we've
-              confirmed details. &pound;99.99 annual renewal each season &mdash;
-              cancel anytime, no questions asked.
+              one hour during UK business hours. &pound;99.99 annual renewal
+              each season &mdash; cancel anytime, no questions asked. Launch
+              price available for the first 20 clubs only.
             </p>
           </form>
         </div>
